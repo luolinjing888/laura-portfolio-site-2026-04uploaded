@@ -1,21 +1,196 @@
 <!doctype html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Laura Luo Portfolio (Original PDF)</title>
+  <title>Laura Luo Portfolio | 中英文作品集 PDF</title>
+  <meta name="description" content="Laura Luo bilingual portfolio PDFs. Preview online and download Chinese / English versions." />
   <style>
-    html, body { margin: 0; padding: 0; height: 100%; background: #111; }
-    .wrap { width: 100%; height: 100%; }
-    iframe { width: 100%; height: 100%; border: 0; display: block; }
+    :root {
+      --bg: #f6f3ef;
+      --paper: #ffffff;
+      --ink: #171717;
+      --muted: #69645e;
+      --line: rgba(23, 23, 23, 0.14);
+      --accent: #ff5a2c;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: "Avenir Next", "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+
+    body {
+      display: grid;
+      grid-template-rows: auto 1fr;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 16px clamp(16px, 3vw, 32px);
+      border-bottom: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.82);
+      backdrop-filter: blur(18px);
+      position: sticky;
+      top: 0;
+      z-index: 3;
+    }
+
+    .title {
+      display: grid;
+      gap: 4px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(18px, 2.4vw, 28px);
+      line-height: 1.1;
+      letter-spacing: -0.04em;
+    }
+
+    p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    button, a {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 9px 13px;
+      background: var(--paper);
+      color: var(--ink);
+      font: inherit;
+      font-size: 13px;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    button[aria-pressed="true"], .primary {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: #111;
+    }
+
+    main {
+      display: grid;
+      min-height: 0;
+    }
+
+    .viewer {
+      width: 100%;
+      height: calc(100vh - 83px);
+      border: 0;
+      background: #2d2d2d;
+    }
+
+    .notice {
+      position: fixed;
+      left: 50%;
+      bottom: 18px;
+      transform: translateX(-50%);
+      width: min(calc(100% - 28px), 720px);
+      padding: 10px 14px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.9);
+      box-shadow: 0 18px 38px rgba(0, 0, 0, 0.12);
+      text-align: center;
+    }
+
+    @media (max-width: 720px) {
+      header {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .actions {
+        justify-content: flex-start;
+      }
+
+      .viewer {
+        height: calc(100vh - 156px);
+      }
+
+      .notice {
+        border-radius: 16px;
+      }
+    }
   </style>
 </head>
 <body>
-  <div class="wrap">
+  <header>
+    <div class="title">
+      <h1>Laura Luo Portfolio</h1>
+      <p>在线预览中英文作品集 PDF。页面打开后会尝试自动下载两份 PDF；如浏览器拦截，请点击右侧按钮手动下载。</p>
+    </div>
+    <nav class="actions" aria-label="Portfolio actions">
+      <button id="show-cn" type="button" aria-pressed="true">预览中文</button>
+      <button id="show-en" type="button" aria-pressed="false">Preview English</button>
+      <a class="primary" href="./Laura-Luo-Portfolio-CN-2026-06.pdf" download>下载中文 PDF</a>
+      <a class="primary" href="./Laura-Luo-Portfolio-EN-2026-06.pdf" download>Download English PDF</a>
+    </nav>
+  </header>
+
+  <main>
     <iframe
-      src="./Portfolio-Laura-Luo-CUHK-MSc-in-New-Media-202604Updated.pdf"
-      title="Laura Luo Portfolio PDF"
+      id="viewer"
+      class="viewer"
+      src="./Laura-Luo-Portfolio-CN-2026-06.pdf"
+      title="Laura Luo Portfolio PDF Preview"
     ></iframe>
-  </div>
+  </main>
+
+  <p class="notice" id="notice">如果浏览器没有自动下载，请使用顶部两个下载按钮。</p>
+
+  <script>
+    const files = {
+      cn: "./Laura-Luo-Portfolio-CN-2026-06.pdf",
+      en: "./Laura-Luo-Portfolio-EN-2026-06.pdf"
+    };
+
+    const viewer = document.querySelector("#viewer");
+    const cnButton = document.querySelector("#show-cn");
+    const enButton = document.querySelector("#show-en");
+
+    function setPreview(lang) {
+      viewer.src = files[lang];
+      cnButton.setAttribute("aria-pressed", String(lang === "cn"));
+      enButton.setAttribute("aria-pressed", String(lang === "en"));
+    }
+
+    function triggerDownload(url, filename) {
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    }
+
+    cnButton.addEventListener("click", () => setPreview("cn"));
+    enButton.addEventListener("click", () => setPreview("en"));
+
+    window.addEventListener("load", () => {
+      setTimeout(() => triggerDownload(files.cn, "Laura-Luo-Portfolio-CN-2026-06.pdf"), 600);
+      setTimeout(() => triggerDownload(files.en, "Laura-Luo-Portfolio-EN-2026-06.pdf"), 1200);
+    });
+  </script>
 </body>
 </html>
